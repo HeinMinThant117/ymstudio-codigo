@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
@@ -59,6 +60,24 @@ class AuthTest extends TestCase
 
         $response = $this->json('POST', 'api/login', ['password' => 'test1234']);
         $response->assertStatus(422);
+    }
+
+    /**
+     * @test
+     */
+    public function user_can_register_with_correct_data()
+    {
+        // $this->withoutExceptionHandling();
+        $registerData = [
+            'name' => 'Test',
+            'email' => 'test@gmail.com',
+            'password' => 'test1234',
+            'confirm_password' => 'test1234'
+        ];
+        $response = $this->post('api/register', $registerData);
+
+        $response->assertStatus(201);
+        $this->assertDatabaseHas('users', Arr::only($registerData, ['email']));
     }
 
     public function tearDown(): void
