@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
@@ -108,5 +109,6 @@ class AuthTest extends TestCase
     public function tearDown(): void
     {
         parent::tearDown();
+        
     }
 }

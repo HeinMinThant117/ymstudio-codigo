@@ -7,6 +7,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -60,6 +61,8 @@ class AuthController extends Controller
 
     protected function logInfo($object, $id, $action)
     {
-        Log::channel('mystudio')->info("$object with id \"${id}\" ${action} at " . Carbon::now()->timezone('Asia/Rangoon'));
+        if (!App::environment('testing')) {
+            Log::channel('mystudio')->info("$object with id \"${id}\" ${action} at " . Carbon::now()->timezone('Asia/Rangoon'));
+        }
     }
 }
