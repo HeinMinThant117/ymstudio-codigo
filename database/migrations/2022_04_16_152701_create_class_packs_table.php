@@ -20,7 +20,7 @@ class CreateClassPacksTable extends Migration
             $table->string('pack_description');
             $table->string('pack_type');
             $table->integer('total_credit');
-            $table->string('tag_name');
+            $table->string('tag_name')->nullable();
             $table->integer('validity_month');
             $table->float('pack_price');
             $table->boolean('newbie_first_attend');
