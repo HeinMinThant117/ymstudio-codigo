@@ -14,7 +14,20 @@ class CreateClassPacksTable extends Migration
     public function up()
     {
         Schema::create('class_packs', function (Blueprint $table) {
-            $table->id();
+            $table->integer('disp_order');
+            $table->string('pack_id')->primary();
+            $table->string('pack_name');
+            $table->string('pack_description');
+            $table->string('pack_type');
+            $table->integer('total_credit');
+            $table->string('tag_name');
+            $table->integer('validity_month');
+            $table->float('pack_price');
+            $table->boolean('newbie_first_attend');
+            $table->integer('newbie_addition_credit');
+            $table->string('newbie_note');
+            $table->string('pack_alias');
+            $table->float('estimate_price');
             $table->timestamps();
         });
     }
