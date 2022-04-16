@@ -31,7 +31,7 @@ class AuthTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $user = User::factory()->create();
-        $response = $this->post('api/login', ['email' => $user->email, 'password' => 'password']);
+        $response = $this->json('POST', 'api/login', ['email' => $user->email, 'password' => 'password']);
         $tokenData = $response->getOriginalContent()->toArray();
 
         $response->assertStatus(200);
@@ -44,7 +44,7 @@ class AuthTest extends TestCase
     public function user_cannot_login_with_incorrect_credentials()
     {
         $this->withoutExceptionHandling();
-        $response = $this->post('api/login', ['email' => 'test@gmail.com', 'password' => 'testsasdfasdf']);
+        $response = $this->json('POST', 'api/login', ['email' => 'test@gmail.com', 'password' => 'testsasdfasdf']);
 
         $response->assertStatus(401);
     }
@@ -67,17 +67,42 @@ class AuthTest extends TestCase
      */
     public function user_can_register_with_correct_data()
     {
-        // $this->withoutExceptionHandling();
         $registerData = [
             'name' => 'Test',
             'email' => 'test@gmail.com',
             'password' => 'test1234',
             'confirm_password' => 'test1234'
         ];
-        $response = $this->post('api/register', $registerData);
+        $response = $this->json('POST', 'api/register', $registerData);
 
         $response->assertStatus(201);
         $this->assertDatabaseHas('users', Arr::only($registerData, ['email']));
+    }
+
+    /**
+     * @test
+     */
+    public function authorized_user_can_logout()
+    {
+        $this->withoutExceptionHandling();
+        $user = User::factory()->create();
+        $response = $this->json('POST', 'api/login', ['email' => $user->email, 'password' => 'password']);
+        $tokenData = $response->getOriginalContent()->toArray();
+
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $tokenData['accessToken']])->post('api/logout');
+
+        $response->assertStatus(204);
+        $this->assertDatabaseMissing('oauth_access_tokens', $tokenData['token']->only('id'));
+    }
+
+    /**
+     * @test
+     */
+    public function unauthorized_user_cannot_logout()
+    {
+        $response = $this->json('POST', 'api/logout');
+
+        $response->assertStatus(401);
     }
 
     public function tearDown(): void
