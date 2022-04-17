@@ -48,6 +48,7 @@ class OrderController extends Controller
                     2
                 );
                 $grandTotal -= $discount;
+                Log::channel('mystudio')->info("PromocodeUser with promocode " . $validated['promocode'] . " and user_id " . auth()->id() . ' created at ' . Carbon::now()->timezone('Asia/Rangoon'));
             } else {
                 $discount = 0;
             }
