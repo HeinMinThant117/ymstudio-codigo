@@ -41,6 +41,10 @@ class OrderTest extends TestCase
 
         $response->assertStatus(201);
 
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $tokenData['token']])->json('POST','api/orders', ['pack_id' => $classpack['pack_id'], 'qty' => 1]);
+
+        dd($response['data']);
+
 
         $this->assertDatabaseCount('orders', 1);
         $this->assertDatabaseCount('class_pack_order', 1);
