@@ -25,6 +25,17 @@ class PromocodeController extends Controller
         ]);
     }
 
+    public function verify()
+    {
+        $validated = request()->validate(['promo_code' => 'required']);
+        return $this->promocodeRepository->checkPromocode($validated['promo_code']);
+    }
+
+    public function apply()
+    {
+        return $this->promocodeRepository->applyPromocode(request('promo_code'));
+    }
+
     private function generateCode()
     {
         $chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";

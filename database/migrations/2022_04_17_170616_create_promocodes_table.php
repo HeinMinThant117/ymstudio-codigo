@@ -16,9 +16,8 @@ class CreatePromocodesTable extends Migration
         Schema::create('promocodes', function (Blueprint $table) {
             $table->string('promo_code')->primary();
             $table->integer('discount');
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->boolean('expired')->default(false);
 
-            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

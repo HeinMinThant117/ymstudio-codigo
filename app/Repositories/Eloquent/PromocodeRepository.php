@@ -14,6 +14,23 @@ class PromocodeRepository implements PromocodeRepositoryInterface
 
     public function checkPromocode($code)
     {
-        return Promocode::where('promo_code', '=', $code)->count();
+        $promocode = Promocode::where('promo_code', '=', $code)->first();
+        if (!$promocode) {
+            return ['message' => 'Promocode does not exist', 'discount' => null];
+        }
+        if ($promocode->expired) {
+            return ['message' => 'Promocode is expired', 'discount' => null];
+        }
+        if ($promocode->users->count() > 0) {
+            return ['message' => 'You have already applied the promocode', 'discount' => null];
+        }
+
+        return ['message' => 'Success', 'discount' => $promocode['discount']];
+    }
+
+    public function applyPromocode($code)
+    {
+        auth()->user()->promocodes()->attach($code);
+        return 'success';
     }
 }

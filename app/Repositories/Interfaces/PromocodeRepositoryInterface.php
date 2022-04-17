@@ -6,4 +6,5 @@ interface PromocodeRepositoryInterface
 {
     public function createPromocode(array $data);
     public function checkPromocode($code);
+    public function applyPromocode($code);
 }

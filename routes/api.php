@@ -29,3 +29,5 @@ Route::post('orders', [OrderController::class, 'store'])->middleware('auth:api')
 Route::get('orders/{id}', [OrderController::class, 'show'])->middleware('auth:api');
 
 Route::post('promocodes', [PromocodeController::class, 'store']);
+Route::post('promocodes/verify', [PromocodeController::class, 'verify'])->middleware('auth:api');
+Route::post('promocodes/apply', [PromocodeController::class, 'apply'])->middleware('auth:api');
