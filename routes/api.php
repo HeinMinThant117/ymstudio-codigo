@@ -3,6 +3,7 @@
 use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\api\ClassPackController;
 use App\Http\Controllers\api\OrderController;
+use App\Http\Controllers\api\PromocodeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,3 +27,5 @@ Route::get('class-packs/{id}', [ClassPackController::class, 'show']);
 
 Route::post('orders', [OrderController::class, 'store'])->middleware('auth:api');
 Route::get('orders/{id}', [OrderController::class, 'show'])->middleware('auth:api');
+
+Route::post('promocodes', [PromocodeController::class, 'store']);
