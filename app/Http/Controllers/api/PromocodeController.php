@@ -28,7 +28,12 @@ class PromocodeController extends Controller
     public function verify()
     {
         $validated = request()->validate(['promo_code' => 'required']);
-        return $this->promocodeRepository->checkPromocode($validated['promo_code']);
+        $promocodeStatus = $this->promocodeRepository->checkPromocode($validated['promo_code']);
+        if ($promocodeStatus['message'] === 'success') {
+            return response()->json(['data' => $promocodeStatus], 200);
+        }
+
+        return response()->json($promocodeStatus, 422);
     }
 
     public function apply()

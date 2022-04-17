@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Repositories\Eloquent\PromocodeRepository;
 use App\Repositories\Interfaces\ClassPackRepositoryInterface;
 use App\Repositories\Interfaces\OrderRepositoryInterface;
+use App\Repositories\Interfaces\PromocodeRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -14,11 +16,13 @@ class OrderController extends Controller
 {
     private OrderRepositoryInterface $orderRepository;
     private ClassPackRepositoryInterface $classPackRepository;
+    private PromocodeRepositoryInterface $promocodeRepository;
 
-    public function __construct(OrderRepositoryInterface $orderRepository, ClassPackRepositoryInterface $classPackRepository)
+    public function __construct(OrderRepositoryInterface $orderRepository, ClassPackRepositoryInterface $classPackRepository, PromocodeRepository $promocodeRepository)
     {
         $this->orderRepository = $orderRepository;
         $this->classPackRepository = $classPackRepository;
+        $this->promocodeRepository = $promocodeRepository;
     }
 
     public function show($id)
@@ -28,14 +32,28 @@ class OrderController extends Controller
 
     public function store()
     {
-        $validated = request()->validate(['pack_id' => 'required', 'qty' => 'required|integer']);
+        $validated = request()->validate(['pack_id' => 'required', 'qty' => 'required|integer', 'promocode' => 'nullable']);
         $classPack = $this->classPackRepository->getClassPackByID($validated['pack_id'])->toArray();
-
         $packPrice = (float)$classPack['pack_price'];
         $gst = ($packPrice * 7) / 100;
         $subtotal = $packPrice - $gst;
-        $discount = 0;
         $grandTotal = $packPrice;
+
+
+        if ($validated['promocode']) {
+            $promocodeStatus = $this->promocodeRepository->checkPromocode($validated['promocode']);
+            if ($promocodeStatus['message'] === 'success') {
+                $this->promocodeRepository->applyPromocode($validated['promocode']);
+                $discount = number_format(($subtotal * $promocodeStatus['discount']) / 100,
+                    2
+                );
+                $grandTotal -= $discount;
+            } else {
+                $discount = 0;
+            }
+        } else {
+            $discount = 0;
+        }
 
 
         $orderData = [
