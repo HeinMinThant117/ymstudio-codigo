@@ -19,6 +19,10 @@ class OrderRepository implements OrderRepositoryInterface
 
     public function getUserOrder($orderID)
     {
-        return auth()->user()->orders()->where('id', $orderID)->first();
+        $order = auth()->user()->orders()->where('id', $orderID)->first();
+        if ($order !== null) {
+            $order->classPacks;
+        }
+        return $order;
     }
 }

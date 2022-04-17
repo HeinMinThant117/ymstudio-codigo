@@ -9,7 +9,7 @@ class ClassPackRepository implements ClassPackRepositoryInterface
 {
     public function getAllClassPacks()
     {
-        return ClassPack::all()->makeHidden(['created_at', 'updated_at']);
+        return ClassPack::orderBy('disp_order', 'ASC')->get()->makeHidden(['created_at', 'updated_at']);
     }
 
     public function getClassPackByID($classpackID)

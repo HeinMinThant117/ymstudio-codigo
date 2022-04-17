@@ -73,7 +73,7 @@ class AuthController extends Controller
     protected function logInfo($object, $id, $action)
     {
         if (!App::environment('testing')) {
-            Log::channel('mystudio')->info("$object with id \"${id}\" ${action} at " . Carbon::now()->timezone('Asia/Rangoon'));
+            Log::channel('mystudio')->info("$object with id ${id} ${action} at " . Carbon::now()->timezone('Asia/Rangoon'));
         }
     }
 }

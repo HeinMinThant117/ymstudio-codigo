@@ -5,7 +5,10 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\ClassPackRepositoryInterface;
 use App\Repositories\Interfaces\OrderRepositoryInterface;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -43,9 +46,19 @@ class OrderController extends Controller
             'grand_total' => $grandTotal
         ];
         $order = $this->orderRepository->createOrder($orderData, $validated['qty'], $packPrice, $classPack['pack_id']);
+
+        $this->logInfo('Order', $order->id, 'created');
+        Log::channel('mystudio')->info("ClassPackOrder with Order with order id {$order['id']} and class pack id {$order['classPacks'][0]['pack_id']} at " . Carbon::now()->timezone('Asia/Rangoon'));
+
         return response()->json([
             'data' => $order
         ], 201);
-        // dd($classPack);
+    }
+
+    protected function logInfo($object, $id, $action)
+    {
+        if (!App::environment('testing')) {
+            Log::channel('mystudio')->info("$object with id ${id} ${action} at " . Carbon::now()->timezone('Asia/Rangoon'));
+        }
     }
 }
