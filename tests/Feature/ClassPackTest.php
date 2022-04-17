@@ -28,7 +28,7 @@ class ClassPackTest extends TestCase
         $response = $this->get('api/class-packs');
 
         $response->assertStatus(200);
-        $this->assertCount(3, $response['data']);
+        $this->assertCount(3, $response['data']['pack_list']);
     }
 
     /**

@@ -17,13 +17,25 @@ class ClassPackController extends Controller
 
     public function index()
     {
+
+        $classPacks = $this->classPackRepository->getAllClassPacks();
+
         return response()->json([
-            'data' => $this->classPackRepository->getAllClassPacks()
+            'errorCode' => 0,
+            'message' => 'Success',
+            'data' => [
+                'total_item' => count($classPacks),
+                'total_page' => 1,
+                'mem_tier' => 'newbie',
+                'total_expired_class' => 0,
+                'pack_list' => $this->classPackRepository->getAllClassPacks()
+            ]
         ]);
     }
 
     public function show($id)
     {
+
         return response()->json([
             'data' => $this->classPackRepository->getClassPackByID($id)
         ]);
