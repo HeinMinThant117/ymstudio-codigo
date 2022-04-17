@@ -40,7 +40,7 @@ class OrderController extends Controller
         $grandTotal = $packPrice;
 
 
-        if ($validated['promocode']) {
+        if ($validated['promocode'] !== null) {
             $promocodeStatus = $this->promocodeRepository->checkPromocode($validated['promocode']);
             if ($promocodeStatus['message'] === 'success') {
                 $this->promocodeRepository->applyPromocode($validated['promocode']);

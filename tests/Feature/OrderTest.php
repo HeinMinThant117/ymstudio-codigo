@@ -37,21 +37,17 @@ class OrderTest extends TestCase
 
         $classpack = ClassPack::factory()->create();
 
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $tokenData['token']])->json('POST', 'api/orders', ['pack_id' => $classpack['pack_id'], 'qty' => 1]);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $tokenData['token']])->json('POST', 'api/orders', ['pack_id' => $classpack['pack_id'], 'qty' => 1, 'promocode' => null]);
 
         $response->assertStatus(201);
 
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $tokenData['token']])->json('POST', 'api/orders', ['pack_id' => $classpack['pack_id'], 'qty' => 1]);
-
-        dd($response['data']);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $tokenData['token']])->json('POST', 'api/orders', ['pack_id' => $classpack['pack_id'], 'qty' => 1, 'promocode' => null]);
 
 
-        $this->assertDatabaseCount('orders', 1);
-        $this->assertDatabaseCount('class_pack_order', 1);
+        $this->assertDatabaseCount('orders', 2);
+        $this->assertDatabaseCount('class_pack_order', 2);
 
         $this->assertDatabaseHas('orders', Arr::only($response['data'], ['id', 'user_id']));
-
-        // $this->assertDatabaseCount()
     }
 
     /**
@@ -79,7 +75,7 @@ class OrderTest extends TestCase
 
         $classpack = ClassPack::factory()->create();
 
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $tokenData['token']])->json('POST', 'api/orders', ['pack_id' => $classpack['pack_id'], 'qty' => 1]);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $tokenData['token']])->json('POST', 'api/orders', ['pack_id' => $classpack['pack_id'], 'qty' => 1, 'promocode' => null]);
 
         $response->assertStatus(201);
 
