@@ -4,7 +4,9 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\PromocodeRepositoryInterface;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PromocodeController extends Controller
 {
@@ -19,10 +21,15 @@ class PromocodeController extends Controller
     {
         $validated = request()->validate(['discount' => 'required|integer|between:5,20']);
 
-        return $this->promocodeRepository->createPromocode([
+        $promocode =  $this->promocodeRepository->createPromocode([
             'promo_code' => $this->generateCode(),
             'discount' => $validated['discount']
         ]);
+
+
+        Log::channel('mystudio')->info("Promocode with {$promocode['promo_code']} created at " . Carbon::now()->timezone('Asia/Rangoon'));
+
+        return $promocode;
     }
 
     public function verify()
@@ -38,7 +45,20 @@ class PromocodeController extends Controller
 
     public function apply()
     {
-        return $this->promocodeRepository->applyPromocode(request('promo_code'));
+        $promocode = request('promo_code');
+        $promocodeStatus = $this->promocodeRepository->applyPromocode($promocode);
+
+        $user_id = auth()->id();
+        if ($promocodeStatus === 'Success') {
+            Log::channel('mystudio')->info("PromocodeUser with promocode {$promocode} and user_id {$user_id}");
+            return response()->json([
+                'message' => 'success'
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => $promocodeStatus
+        ], 422);
     }
 
     private function generateCode()

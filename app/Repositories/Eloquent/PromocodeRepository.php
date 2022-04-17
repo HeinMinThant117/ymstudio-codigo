@@ -30,7 +30,16 @@ class PromocodeRepository implements PromocodeRepositoryInterface
 
     public function applyPromocode($code)
     {
+        $promocode = Promocode::where('promo_code', '=', $code)->first();
+        if (!$promocode) {
+            return 'Code doesnt exist';
+        }
+
+        if ($promocode->users->count() > 0) {
+            return  'Already applied code';
+        }
+
         auth()->user()->promocodes()->attach($code);
-        return 'success';
+        return 'Success';
     }
 }
