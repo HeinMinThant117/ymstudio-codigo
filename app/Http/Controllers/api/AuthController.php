@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -16,6 +17,13 @@ use Illuminate\Validation\UnauthorizedException;
 
 class AuthController extends Controller
 {
+    private UserRepositoryInterface $userRepository;
+
+    public function __construct(UserRepositoryInterface $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function login(Request $request)
     {
         $validated = $request->validate([
@@ -43,7 +51,7 @@ class AuthController extends Controller
 
         $validated['password'] = Hash::make($validated['password']);
 
-        $user = User::create(Arr::only($validated, ['name', 'email', 'password']));
+        $user = $this->userRepository->createUser(Arr::only($validated, ['name', 'email', 'password']));
         $this->logInfo('User', $user->id, 'created');
 
         return response()->json(['message' => 'success'], 201);
