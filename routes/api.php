@@ -25,3 +25,4 @@ Route::get('class-packs', [ClassPackController::class, 'index']);
 Route::get('class-packs/{id}', [ClassPackController::class, 'show']);
 
 Route::post('orders', [OrderController::class, 'store'])->middleware('auth:api');
+Route::get('orders/{id}', [OrderController::class, 'show'])->middleware('auth:api');

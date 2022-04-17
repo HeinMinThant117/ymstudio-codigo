@@ -37,11 +37,11 @@ class OrderTest extends TestCase
 
         $classpack = ClassPack::factory()->create();
 
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $tokenData['token']])->json('POST','api/orders', ['pack_id' => $classpack['pack_id'], 'qty' => 1]);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $tokenData['token']])->json('POST', 'api/orders', ['pack_id' => $classpack['pack_id'], 'qty' => 1]);
 
         $response->assertStatus(201);
 
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $tokenData['token']])->json('POST','api/orders', ['pack_id' => $classpack['pack_id'], 'qty' => 1]);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $tokenData['token']])->json('POST', 'api/orders', ['pack_id' => $classpack['pack_id'], 'qty' => 1]);
 
         dd($response['data']);
 
@@ -65,6 +65,27 @@ class OrderTest extends TestCase
         $response = $this->withHeaders([])->json('POST', 'api/orders', ['pack_id' => $classpack['pack_id'], 'qty' => 1]);
 
         $response->assertStatus(401);
+    }
+
+    /**
+     * @test
+     */
+    public function user_can_view_thier_order()
+    {
+        $this->withoutExceptionHandling();
+        $user = User::factory()->create();
+        $response = $this->json('POST', 'api/login', ['email' => $user->email, 'password' => 'password']);
+        $tokenData = $response->getOriginalContent()['data'];
+
+        $classpack = ClassPack::factory()->create();
+
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $tokenData['token']])->json('POST', 'api/orders', ['pack_id' => $classpack['pack_id'], 'qty' => 1]);
+
+        $response->assertStatus(201);
+
+        $response = $this->json('GET', 'api/orders/' . intval($response['data']['id']));
+
+        $response->assertStatus(200);
     }
 
     public function tearDown(): void

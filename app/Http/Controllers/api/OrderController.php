@@ -18,6 +18,11 @@ class OrderController extends Controller
         $this->classPackRepository = $classPackRepository;
     }
 
+    public function show($id)
+    {
+        return response()->json(['data' => $this->orderRepository->getUserOrder($id)]);
+    }
+
     public function store()
     {
         $validated = request()->validate(['pack_id' => 'required', 'qty' => 'required|integer']);

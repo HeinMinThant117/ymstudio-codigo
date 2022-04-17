@@ -16,4 +16,9 @@ class OrderRepository implements OrderRepositoryInterface
 
         return $order;
     }
+
+    public function getUserOrder($orderID)
+    {
+        return auth()->user()->orders()->where('id', $orderID)->first();
+    }
 }
