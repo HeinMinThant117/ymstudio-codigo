@@ -14,6 +14,6 @@ class ClassPackRepository implements ClassPackRepositoryInterface
 
     public function getClassPackByID($classpackID)
     {
-        return ClassPack::where('pack_id', $classpackID)->first();
+        return ClassPack::where('pack_id', $classpackID)->first()->makeHidden(['created_at', 'updated_at']);
     }
 }

@@ -7,8 +7,10 @@ use App\Repositories\Interfaces\OrderRepositoryInterface;
 
 class OrderRepository implements OrderRepositoryInterface
 {
-    public function createOrder(array $data)
+    public function createOrder(array $data, $qty, $packPrice, $packID)
     {
-        return Order::create($data);
+        $order = Order::create($data);
+        $order->classPacks()->attach($packID, ['qty' => $qty, 'price' => $packPrice]);
+        return $order->with('classPacks')->first()->toArray();
     }
 }

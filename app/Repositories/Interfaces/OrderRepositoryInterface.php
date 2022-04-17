@@ -4,5 +4,5 @@ namespace App\Repositories\Interfaces;
 
 interface OrderRepositoryInterface
 {
-    public function createOrder(array $data);
+    public function createOrder(array $data, $qty, $packPrice, $packID);
 }

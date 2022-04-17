@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrderClassPacketTable extends Migration
+class CreateClassPackOrderTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,15 @@ class CreateOrderClassPacketTable extends Migration
      */
     public function up()
     {
-        Schema::create('order_class_packet', function (Blueprint $table) {
+        Schema::create('class_pack_order', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('order_id');
+            $table->string('pack_id');
             $table->integer('qty');
             $table->float('price');
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('pack_id')->references('pack_id')->on('class_packs');
             $table->foreign('order_id')->references('id')->on('orders');
         });
     }
@@ -33,6 +33,6 @@ class CreateOrderClassPacketTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_class_packet');
+        Schema::dropIfExists('class_pack_order');
     }
 }
