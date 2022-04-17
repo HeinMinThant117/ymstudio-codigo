@@ -21,8 +21,10 @@ class PromocodeRepository implements PromocodeRepositoryInterface
         if ($promocode->expired) {
             return ['message' => 'Promocode is expired'];
         }
-        if ($promocode->users->count() > 0) {
-            return ['message' => 'You have already applied the promocode'];
+        foreach ($promocode->users as $user) {
+            if ($user->id == auth()->id()) {
+                return ['message' => 'You have already applied the promocode'];
+            }
         }
 
         return ['message' => 'success', 'discount' => $promocode['discount'], 'code' => $promocode['promo_code']];
@@ -35,9 +37,6 @@ class PromocodeRepository implements PromocodeRepositoryInterface
             return 'Code doesnt exist';
         }
 
-        if ($promocode->users->count() > 0) {
-            return  'Already applied code';
-        }
 
         auth()->user()->promocodes()->attach($code);
         return 'Success';

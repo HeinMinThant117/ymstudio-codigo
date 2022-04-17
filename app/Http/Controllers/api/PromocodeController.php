@@ -36,6 +36,7 @@ class PromocodeController extends Controller
     {
         $validated = request()->validate(['promo_code' => 'required']);
         $promocodeStatus = $this->promocodeRepository->checkPromocode($validated['promo_code']);
+        return $promocodeStatus;
         if ($promocodeStatus['message'] === 'success') {
             return response()->json(['data' => $promocodeStatus], 200);
         }
