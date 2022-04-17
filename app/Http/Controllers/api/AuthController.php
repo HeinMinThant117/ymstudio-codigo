@@ -29,9 +29,14 @@ class AuthController extends Controller
         ]);
         if (Auth::attempt($validated)) {
             $token = auth()->user()->createToken('GeneralToken');
-
             $this->logInfo('Token',  $token->toArray()['token']['id'], 'created');
-            return response()->json($token, 200);
+            return response()->json([
+                'data' => [
+                    'token' => $token->accessToken,
+                    'user_id' => auth()->id(),
+                    'name' => auth()->user()->name
+                ]
+            ], 200);
         }
 
         return response()->json(['error' => 'Unauthorized'], 401);

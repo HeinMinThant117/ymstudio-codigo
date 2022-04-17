@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Repositories\Eloquent\ClassPackRepository;
+use App\Repositories\Eloquent\OrderRepository;
 use App\Repositories\Eloquent\UserRepository;
 use App\Repositories\Interfaces\ClassPackRepositoryInterface;
+use App\Repositories\Interfaces\OrderRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
@@ -19,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(ClassPackRepositoryInterface::class, ClassPackRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
+        $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
     }
 
     /**
