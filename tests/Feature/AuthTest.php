@@ -33,10 +33,10 @@ class AuthTest extends TestCase
         $this->withoutExceptionHandling();
         $user = User::factory()->create();
         $response = $this->json('POST', 'api/login', ['email' => $user->email, 'password' => 'password']);
-        $tokenData = $response->getOriginalContent()->toArray();
+        $tokenData = $response->getOriginalContent()['data'];
 
         $response->assertStatus(200);
-        $this->assertDatabaseHas('oauth_access_tokens', $tokenData['token']->only('id'));
+        $this->assertDatabaseHas('oauth_access_tokens', ['id' => $tokenData['token_id']]);
     }
 
     /**
@@ -88,12 +88,13 @@ class AuthTest extends TestCase
         $this->withoutExceptionHandling();
         $user = User::factory()->create();
         $response = $this->json('POST', 'api/login', ['email' => $user->email, 'password' => 'password']);
-        $tokenData = $response->getOriginalContent()->toArray();
+        $tokenData = $response->getOriginalContent()['data'];
 
-        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $tokenData['accessToken']])->post('api/logout');
+
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $tokenData['token']])->post('api/logout');
 
         $response->assertStatus(204);
-        $this->assertDatabaseMissing('oauth_access_tokens', $tokenData['token']->only('id'));
+        $this->assertDatabaseMissing('oauth_access_tokens', ['id' => $tokenData['token_id']]);
     }
 
     /**
@@ -104,11 +105,5 @@ class AuthTest extends TestCase
         $response = $this->json('POST', 'api/logout');
 
         $response->assertStatus(401);
-    }
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
-        
     }
 }
